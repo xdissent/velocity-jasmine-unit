@@ -61,7 +61,7 @@ var regurgitate = Meteor.bindEnvironment(function(data) {
   consoleData += data;
   if (consoleData.indexOf('\n') !== -1) {
     console.log(consoleData.trim());
-    Meteor.call('postLog', {
+    Velocity.postLog({
         type: 'out',
         framework: 'jasmine-unit',
         message: consoleData.trim()
@@ -97,13 +97,13 @@ closeFunc = Meteor.bindEnvironment(function () {
           }
           result.id = 'jasmine-unit:' + hashCode(xmlFile + testcase.$.classname + testcase.$.name);
           newResults.push(result.id);
-          Meteor.call('postResult', result);
+          Velocity.postResult(result);
         });
       });
     });
 
     if (index === xmlFiles.length - 1) {
-      Meteor.call('resetReports', {framework: 'jasmine-unit', notIn: newResults});
+      Velocity.resetReports({framework: 'jasmine-unit', notIn: newResults});
     }
   });
 });  // end closeFunc
