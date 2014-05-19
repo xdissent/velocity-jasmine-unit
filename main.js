@@ -35,7 +35,9 @@ args.push(path.join(pwd,'packages','velocity-jasmine-unit','lib'));
 args.push(path.join(pwd,'tests'));
 
 
-console.log(ANNOUNCE_STRING);
+if (Package.mirror.Mirror.current === 'velocity-jasmine-unit') {
+  console.log(ANNOUNCE_STRING);
+}
 
 
 
@@ -102,14 +104,17 @@ closeFunc = Meteor.bindEnvironment(function () {
   });
 });  // end closeFunc
 
-function rerunTests () {
+function rerunTests (callback) {
     rimraf.sync(testReportsPath);
     var jasmineNode = spawn(process.execPath, args);
     jasmineNode.stdout.on('data', regurgitate);
     jasmineNode.stderr.on('data', regurgitate);
-    jasmineNode.on('close', closeFunc);
+    jasmineNode.on('close', function () {
+      closeFunc.apply(null, arguments);
+      if (callback) callback();
+    });
 }
 
-Velocity.registerFramework('jasmine-unit', rerunTests);
+Velocity.registerFramework('jasmine-unit', {mirror: true}, rerunTests);
 
 })();
