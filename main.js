@@ -34,12 +34,6 @@ args.push(testReportsPath);
 args.push(path.join(pwd,'packages','velocity-jasmine-unit','lib'));
 args.push(path.join(pwd,'tests'));
 
-// How can we abstract this server-side so the test frameworks don't need to know about velocity collections
-VelocityTestFiles.find({targetFramework: 'jasmine-unit'}).observe({
-    added: rerunTests,
-    changed: rerunTests,
-    removed: rerunTests
-});
 
 console.log(ANNOUNCE_STRING);
 
@@ -115,5 +109,7 @@ function rerunTests () {
     jasmineNode.stderr.on('data', regurgitate);
     jasmineNode.on('close', closeFunc);
 }
+
+Velocity.registerFramework('jasmine-unit', rerunTests);
 
 })();
